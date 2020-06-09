@@ -34,7 +34,7 @@ class fdspawn(SpawnBase):
     for patterns, or to control a modem or serial device. '''
 
     def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
-                  logfile=None, encoding=None, codec_errors='strict', use_poll=False):
+                  logger=None, encoding=None, codec_errors='strict', use_poll=False):
         '''This takes a file descriptor (an int) or an object that support the
         fileno() method (returning an int). All Python file-like objects
         support fileno(). '''
@@ -52,7 +52,7 @@ class fdspawn(SpawnBase):
 
         self.args = None
         self.command = None
-        SpawnBase.__init__(self, timeout, maxread, searchwindowsize, logfile,
+        SpawnBase.__init__(self, timeout, maxread, searchwindowsize, logger,
                            encoding=encoding, codec_errors=codec_errors)
         self.child_fd = fd
         self.own_fd = False

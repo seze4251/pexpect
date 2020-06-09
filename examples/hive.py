@@ -225,7 +225,7 @@ def login (args, cli_username=None, cli_password=None):
             hive[hostname].force_password = True
             hive[hostname].login(*hive_connect_info[hostname])
             print(hive[hostname].before)
-            hive[hostname].logfile = fout
+            hive[hostname].logger = fout
             print('- OK')
         except Exception as e:
             print('- ERROR', end=' ')

@@ -32,7 +32,7 @@ def getProcessResults(cmd, timeLimit=20):
   output = ""
   startTime = time.time()
   child = pexpect.spawn(cmd, timeout=10)
-  child.logfile = sys.stdout
+  child.logger = sys.stdout
 
   while 1:
     try:

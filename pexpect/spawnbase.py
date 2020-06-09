@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import errno
+import logging
 from .exceptions import ExceptionPexpect, EOF, TIMEOUT
 from .expect import Expecter, searcher_string, searcher_re
 
@@ -31,11 +32,7 @@ class SpawnBase(object):
     flag_eof = False
 
     def __init__(self, timeout=30, maxread=2000, searchwindowsize=None,
-                 logfile=None, encoding=None, codec_errors='strict'):
-        self.stdin = sys.stdin
-        self.stdout = sys.stdout
-        self.stderr = sys.stderr
-
+                 logger=None, encoding=None, codec_errors='strict'):
         self.searcher = None
         self.ignorecase = False
         self.before = None
@@ -51,11 +48,7 @@ class SpawnBase(object):
         self.child_fd = -1
         self.timeout = timeout
         self.delimiter = EOF
-        self.logfile = logfile
-        # input from child (read_nonblocking)
-        self.logfile_read = None
-        # output to send (send, sendline)
-        self.logfile_send = None
+        self.logger = logger
         # max bytes to read at one time into buffer
         self.maxread = maxread
         # Data before searchwindowsize point is preserved, but not searched.
@@ -91,17 +84,9 @@ class SpawnBase(object):
             if PY3:
                 self.allowed_string_types = (bytes, str)
                 self.linesep = os.linesep.encode('ascii')
-                def write_to_stdout(b):
-                    try:
-                        return sys.stdout.buffer.write(b)
-                    except AttributeError:
-                        # If stdout has been replaced, it may not have .buffer
-                        return sys.stdout.write(b.decode('ascii', 'replace'))
-                self.write_to_stdout = write_to_stdout
             else:
                 self.allowed_string_types = (basestring,)  # analysis:ignore
                 self.linesep = os.linesep
-                self.write_to_stdout = sys.stdout.write
         else:
             # unicode mode
             self._encoder = codecs.getincrementalencoder(encoding)(codec_errors)
@@ -124,18 +109,10 @@ class SpawnBase(object):
         # untrimmed buffer, used to create the before attribute.
         self._before = self.buffer_type()
 
-    def _log(self, s, direction):
-        if self.logfile is not None:
-            self.logfile.write(s)
-            self.logfile.flush()
-        second_log = self.logfile_send if (direction=='send') else self.logfile_read
-        if second_log is not None:
-            second_log.write(s)
-            second_log.flush()
+    def _log(self, s, direction, severity=logging.INFO):
+        if self.logger is not None:
+            self.logger.log(severity, s)
 
-    # For backwards compatibility, in bytes mode (when encoding is None)
-    # unicode is accepted for send and expect. Unicode mode is strictly unicode
-    # only.
     def _coerce_expect_string(self, s):
         if self.encoding is None and not isinstance(s, bytes):
             return s.encode('ascii')

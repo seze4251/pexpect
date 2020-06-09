@@ -34,25 +34,25 @@ class TestCaseLog(PexpectTestCase.PexpectTestCase):
         filename = tempfile.mktemp()
         mylog = open(filename, 'wb')
         p = pexpect.spawn('echo', [log_message])
-        p.logfile = mylog
+        p.logger = mylog
         p.expect(pexpect.EOF)
-        p.logfile = None
+        p.logger = None
         mylog.close()
         with open(filename, 'rb') as f:
             lf = f.read()
         os.unlink(filename)
         self.assertEqual(lf.rstrip(), log_message.encode('ascii'))
 
-    def test_log_logfile_read (self):
+    def test_log_logger_read (self):
         log_message = 'This is a test.'
         filename = tempfile.mktemp()
         mylog = open(filename, 'wb')
         p = pexpect.spawn('cat')
-        p.logfile_read = mylog
+        p.logger_read = mylog
         p.sendline(log_message)
         p.sendeof()
         p.expect(pexpect.EOF)
-        p.logfile = None
+        p.logger = None
         mylog.close()
         with open(filename, 'rb') as f:
             lf = f.read()
@@ -60,16 +60,16 @@ class TestCaseLog(PexpectTestCase.PexpectTestCase):
         lf = lf.replace(_CAT_EOF, b'')
         self.assertEqual(lf, b'This is a test.\r\nThis is a test.\r\n')
 
-    def test_log_logfile_send (self):
+    def test_log_logger_send (self):
         log_message = b'This is a test.'
         filename = tempfile.mktemp()
         mylog = open (filename, 'wb')
         p = pexpect.spawn('cat')
-        p.logfile_send = mylog
+        p.logger_send = mylog
         p.sendline(log_message)
         p.sendeof()
         p.expect (pexpect.EOF)
-        p.logfile = None
+        p.logger = None
         mylog.close()
         with open(filename, 'rb') as f:
             lf = f.read()
@@ -79,7 +79,7 @@ class TestCaseLog(PexpectTestCase.PexpectTestCase):
 
     def test_log_send_and_received (self):
 
-        '''The logfile should have the test message three time -- once for the
+        '''The logger should have the test message three time -- once for the
         data we sent. Once for the data that cat echos back as characters are
         typed. And once for the data that cat prints after we send a linefeed
         (sent by sendline). '''
@@ -88,11 +88,11 @@ class TestCaseLog(PexpectTestCase.PexpectTestCase):
         filename = tempfile.mktemp()
         mylog = open(filename, 'wb')
         p = pexpect.spawn('cat')
-        p.logfile = mylog
+        p.logger = mylog
         p.sendline(log_message)
         p.sendeof()
         p.expect (pexpect.EOF)
-        p.logfile = None
+        p.logger = None
         mylog.close()
         with open(filename, 'rb') as f:
             lf = f.read()

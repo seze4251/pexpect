@@ -9,3 +9,6 @@ MANIFEST
 htmlcov
 *.egg-info/
 .cache/
+.project
+.pydevproject
+.settings/

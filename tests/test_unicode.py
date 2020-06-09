@@ -112,14 +112,14 @@ class UnicodeTests(PexpectTestCase.PexpectTestCase):
             import io
             open = io.open
 
-        p.logfile_send = open(filename_send, 'w', encoding='utf-8')
-        p.logfile_read = open(filename_read, 'w', encoding='utf-8')
+        p.logger_send = open(filename_send, 'w', encoding='utf-8')
+        p.logger_read = open(filename_read, 'w', encoding='utf-8')
         p.sendline(msg)
         p.sendeof()
         p.expect(pexpect.EOF)
         p.close()
-        p.logfile_send.close()
-        p.logfile_read.close()
+        p.logger_send.close()
+        p.logger_read.close()
 
         # ensure the 'send' log is correct,
         with open(filename_send, 'r', encoding='utf-8') as f:

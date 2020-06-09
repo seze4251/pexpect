@@ -27,7 +27,7 @@ class SSHTestBase(PexpectTestCase):
 class PxsshTestCase(SSHTestBase):
     def test_fake_ssh(self):
         ssh = pxssh.pxssh()
-        #ssh.logfile_read = sys.stdout  # DEBUG
+        #ssh.logger_read = sys.stdout  # DEBUG
         ssh.login('server', 'me', password='s3cret')
         ssh.sendline('ping')
         ssh.expect('pong', timeout=10)

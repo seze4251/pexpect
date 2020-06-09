@@ -34,7 +34,7 @@ class spawn(SpawnBase):
     use_native_pty_fork = use_native_pty_fork
 
     def __init__(self, command, args=[], timeout=30, maxread=2000,
-                 searchwindowsize=None, logfile=None, cwd=None, env=None,
+                 searchwindowsize=None, logger=None, cwd=None, env=None,
                  ignore_sighup=False, echo=True, preexec_fn=None,
                  encoding=None, codec_errors='strict', dimensions=None,
                  use_poll=False):
@@ -92,42 +92,42 @@ class spawn(SpawnBase):
         :meth:`~.expect` may block indefinitely until match.
 
 
-        The logfile member turns on or off logging. All input and output will
-        be copied to the given file object. Set logfile to None to stop
-        logging. This is the default. Set logfile to sys.stdout to echo
-        everything to standard output. The logfile is flushed after each write.
+        The logger member turns on or off logging. All input and output will
+        be copied to the given file object. Set logger to None to stop
+        logging. This is the default. Set logger to sys.stdout to echo
+        everything to standard output. The logger is flushed after each write.
 
         Example log input and output to a file::
 
             child = pexpect.spawn('some_command')
             fout = open('mylog.txt','wb')
-            child.logfile = fout
+            child.logger = fout
 
         Example log to stdout::
 
             # In Python 2:
             child = pexpect.spawn('some_command')
-            child.logfile = sys.stdout
+            child.logger = sys.stdout
 
             # In Python 3, we'll use the ``encoding`` argument to decode data
             # from the subprocess and handle it as unicode:
             child = pexpect.spawn('some_command', encoding='utf-8')
-            child.logfile = sys.stdout
+            child.logger = sys.stdout
 
-        The logfile_read and logfile_send members can be used to separately log
+        The logger_read and logger_send members can be used to separately log
         the input from the child and output sent to the child. Sometimes you
         don't want to see everything you write to the child. You only want to
         log what the child sends back. For example::
 
             child = pexpect.spawn('some_command')
-            child.logfile_read = sys.stdout
+            child.logger_read = sys.stdout
 
         You will need to pass an encoding to spawn in the above code if you are
         using Python 3.
 
-        To separately log output sent to the child use logfile_send::
+        To separately log output sent to the child use logger_send::
 
-            child.logfile_send = fout
+            child.logger_send = fout
 
         If ``ignore_sighup`` is True, the child process will ignore SIGHUP
         signals. The default is False from Pexpect 4.0, meaning that SIGHUP
@@ -187,7 +187,7 @@ class spawn(SpawnBase):
         for socket handling. This is handy if your system could have > 1024 fds
         '''
         super(spawn, self).__init__(timeout=timeout, maxread=maxread, searchwindowsize=searchwindowsize,
-                                    logfile=logfile, encoding=encoding, codec_errors=codec_errors)
+                                    logger=logger, encoding=encoding, codec_errors=codec_errors)
         self.STDIN_FILENO = pty.STDIN_FILENO
         self.STDOUT_FILENO = pty.STDOUT_FILENO
         self.STDERR_FILENO = pty.STDERR_FILENO
@@ -226,9 +226,9 @@ class spawn(SpawnBase):
         s.append('closed: ' + str(self.closed))
         s.append('timeout: ' + str(self.timeout))
         s.append('delimiter: ' + str(self.delimiter))
-        s.append('logfile: ' + str(self.logfile))
-        s.append('logfile_read: ' + str(self.logfile_read))
-        s.append('logfile_send: ' + str(self.logfile_send))
+        s.append('logger: ' + str(self.logger))
+        s.append('logger_read: ' + str(self.logger_read))
+        s.append('logger_send: ' + str(self.logger_send))
         s.append('maxread: ' + str(self.maxread))
         s.append('ignorecase: ' + str(self.ignorecase))
         s.append('searchwindowsize: ' + str(self.searchwindowsize))
@@ -417,7 +417,7 @@ class spawn(SpawnBase):
         '''This reads at most size characters from the child application. It
         includes a timeout. If the read does not complete within the timeout
         period then a TIMEOUT exception is raised. If the end of file is read
-        then an EOF exception will be raised.  If a logfile is specified, a
+        then an EOF exception will be raised.  If a logger is specified, a
         copy is written to that log.
 
         If timeout is None then the read may block indefinitely.
@@ -526,7 +526,7 @@ class spawn(SpawnBase):
 
     def send(self, s):
         '''Sends string ``s`` to the child process, returning the number of
-        bytes written. If a logfile is specified, a copy is written to that
+        bytes written. If a logger is specified, a copy is written to that
         log.
 
         The default terminal input mode is canonical processing unless set
@@ -749,7 +749,7 @@ class spawn(SpawnBase):
         entered as ``Ctrl - ]``, the very same as BSD telnet. To prevent
         escaping, escape_character may be set to None.
 
-        If a logfile is specified, then the data sent and received from the
+        If a logger is specified, then the data sent and received from the
         child process in interact mode is duplicated to the given log.
 
         You may pass in optional input and output filter functions. These

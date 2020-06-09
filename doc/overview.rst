@@ -207,7 +207,7 @@ It is also useful to log the child's input and out to a file or the screen. The
 following will turn on logging and send output to stdout (the screen)::
 
     child = pexpect.spawn(foo)
-    child.logfile = sys.stdout.buffer
+    child.logger = sys.stdout.buffer
 
 The `sys.stdout.buffer` object is available since Python 3. With Python 2, one
 has to assign just `sys.stdout` instead.
@@ -266,4 +266,3 @@ When run by ``PopenSpawn``, they may behave differently.
 
    `wexpect <https://pypi.org/project/wexpect/>`__ is an
    alternative for Windows, which works with a hidden console.
-  

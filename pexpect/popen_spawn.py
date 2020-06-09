@@ -19,10 +19,10 @@ from .utils import string_types
 
 class PopenSpawn(SpawnBase):
     def __init__(self, cmd, timeout=30, maxread=2000, searchwindowsize=None,
-                 logfile=None, cwd=None, env=None, encoding=None,
+                 logger=None, cwd=None, env=None, encoding=None,
                  codec_errors='strict', preexec_fn=None):
         super(PopenSpawn, self).__init__(timeout=timeout, maxread=maxread,
-                searchwindowsize=searchwindowsize, logfile=logfile,
+                searchwindowsize=searchwindowsize, logger=logger,
                 encoding=encoding, codec_errors=codec_errors)
 
         # Note that `SpawnBase` initializes `self.crlf` to `\r\n`

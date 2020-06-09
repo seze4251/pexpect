@@ -5,7 +5,7 @@ from .exceptions import EOF, TIMEOUT
 from .pty_spawn import spawn
 
 def run(command, timeout=30, withexitstatus=False, events=None,
-        extra_args=None, logfile=None, cwd=None, env=None, **kwargs):
+        extra_args=None, logger=None, cwd=None, env=None, **kwargs):
 
     '''
     This function runs the given command; waits for it to finish; then
@@ -93,10 +93,10 @@ def run(command, timeout=30, withexitstatus=False, events=None,
     encoding and decoding are handled.
     '''
     if timeout == -1:
-        child = spawn(command, maxread=2000, logfile=logfile, cwd=cwd, env=env,
+        child = spawn(command, maxread=2000, logger=logger, cwd=cwd, env=env,
                         **kwargs)
     else:
-        child = spawn(command, timeout=timeout, maxread=2000, logfile=logfile,
+        child = spawn(command, timeout=timeout, maxread=2000, logger=logger,
                 cwd=cwd, env=env, **kwargs)
     if isinstance(events, list):
         patterns= [x for x,y in events]
@@ -148,10 +148,10 @@ def run(command, timeout=30, withexitstatus=False, events=None,
         return child_result
 
 def runu(command, timeout=30, withexitstatus=False, events=None,
-        extra_args=None, logfile=None, cwd=None, env=None, **kwargs):
+        extra_args=None, logger=None, cwd=None, env=None, **kwargs):
     """Deprecated: pass encoding to run() instead.
     """
     kwargs.setdefault('encoding', 'utf-8')
     return run(command, timeout=timeout, withexitstatus=withexitstatus,
-                events=events, extra_args=extra_args, logfile=logfile, cwd=cwd,
+                events=events, extra_args=extra_args, logger=logger, cwd=cwd,
                 env=env, **kwargs)

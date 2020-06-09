@@ -4,9 +4,9 @@
 entire shell session is logged to a file called script.log. This behaves much
 like the classic BSD command 'script'.
 
-./script.py [-a] [-c command] {logfilename}
+./script.py [-a] [-c command] {loggername}
 
-    logfilename : This is the name of the log file. Default is script.log.
+    loggername : This is the name of the log file. Default is script.log.
     -a : Append to log file. Default is to overwrite log file.
     -c : spawn command. Default is to spawn the sh shell.
 
@@ -88,7 +88,7 @@ def main():
     # Start the interactive session
     ######################################################################
     p = pexpect.spawn(command)
-    p.logfile = fout
+    p.logger = fout
     global global_pexpect_instance
     global_pexpect_instance = p
     signal.signal(signal.SIGWINCH, sigwinch_passthrough)

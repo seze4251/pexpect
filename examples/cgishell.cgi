@@ -57,12 +57,12 @@ def server (hostname, username, password, socket_filename='/tmp/server_sock', da
             os.unlink(mypid_name)
             return daemon_pid
 
-    virtual_screen = ANSI.ANSI (24,80) 
+    virtual_screen = ANSI.ANSI (24,80)
     child = pxssh.pxssh()
     try:
         child.login (hostname, username, password, login_naked=True)
     except:
-        return   
+        return
     if verbose: print('login OK')
     virtual_screen.write (child.before)
     virtual_screen.write (child.after)
@@ -148,7 +148,7 @@ def endless_poll (child, prompt, screen, refresh_timeout=0.1):
     """This keeps the screen updated with the output of the child.
         This will be run in a separate thread. See roller class.
     """
-    #child.logfile_read = screen
+    #child.logger_read = screen
     try:
         s = child.read_nonblocking(4000, 0.1)
         screen.write(s)
@@ -180,7 +180,7 @@ def daemonize (stdin=None, stdout=None, stderr=None, daemon_pid_filename=None):
     except OSError as e:
         raise Exception("%s [%d]" % (e.strerror, e.errno))
 
-    if pid != 0: 
+    if pid != 0:
         os.waitpid(pid,0)
         if daemon_pid_filename is not None:
             daemon_pid = int(file(daemon_pid_filename,'r').read())
@@ -209,7 +209,7 @@ def daemonize (stdin=None, stdout=None, stderr=None, daemon_pid_filename=None):
     maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
     if maxfd == resource.RLIM_INFINITY:
         maxfd = MAXFD
-  
+
     # close all file descriptors
     for fd in range(0, maxfd):
         try:
@@ -306,7 +306,7 @@ def server_cli():
     # There are a million ways to cry for help. These are but a few of them.
     if [elem for elem in command_line_options if elem in ['-h','--h','-?','--?','--help']]:
         exit_with_usage(0)
-  
+
     hostname = "127.0.0.1"
     #port = 1664
     username = os.getenv('USER')
@@ -328,7 +328,7 @@ def server_cli():
         password = options['--password']
     else:
         password = getpass.getpass('password: ')
-   
+
     server (hostname, username, password, '/tmp/mysock', daemon_mode)
 
 def random_sid ():
@@ -351,7 +351,7 @@ def parse_host_connect_string (hcs):
     d = m.groupdict()
     d['password'] = d['password'].replace('\\@','@')
     return d
-     
+
 def pretty_box (s, rows=24, cols=80):
     """This puts an ASCII text box around the given string.
     """
@@ -376,8 +376,8 @@ a:hover {color: #0f0}
 hr {color: #0f0}
 html,body,textarea,input,form
 {
-font-family: "Courier New", Courier, mono; 
-font-size: 8pt; 
+font-family: "Courier New", Courier, mono;
+font-size: 8pt;
 color: #0c0;
 background-color: #020;
 margin:0;
@@ -455,7 +455,7 @@ function multibrowser_ajax ()
     return xmlHttp;
 }
 function load_url_to_screen(url)
-{ 
+{
     xmlhttp = multibrowser_ajax();
     //window.XMLHttpRequest?new XMLHttpRequest(): new ActiveXObject("Microsoft.XMLHTTP");
     xmlhttp.onreadystatechange = update_virtual_screen;
@@ -549,7 +549,7 @@ function key_shift()
         flag_shiftlock = 0;
         flag_shift = 1;
     }
-    update_button_colors(); 
+    update_button_colors();
 }
 function key_ctrl ()
 {
@@ -563,7 +563,7 @@ function key_ctrl ()
         flag_shiftlock = 0;
         flag_shift = 0;
     }
-    
+
     update_button_colors();
 }
 function update_button_colors ()
@@ -596,7 +596,7 @@ function update_button_colors ()
     {
         document.form['ShiftLock'].style.backgroundColor = document.form.style.backgroundColor;
     }
-    
+
 }
 function keyHandler(e)
 {
@@ -613,7 +613,7 @@ function keyHandler(e)
 //if (document.layers)
 //    document.captureEvents(Event.KEYPRESS);
 //http://sniptools.com/jskeys
-//document.onkeyup = KeyCheck;       
+//document.onkeyup = KeyCheck;
 function KeyCheck(e)
 {
     var KeyID = (window.event) ? event.keyCode : e.keyCode;
@@ -633,7 +633,7 @@ function KeyCheck(e)
 &nbsp;<input name="cli" id="cli" type="text" size="80"><br>
 <table border="0" align="left">
 <tr>
-<td width="86%%" align="center">    
+<td width="86%%" align="center">
     <input name="submit" type="submit" value="Submit">
     <input name="refresh" type="button" value="REFRESH" onclick="refresh_screen()">
     <input name="refresh" type="button" value="CURSOR" onclick="query_cursor()">
@@ -703,7 +703,7 @@ function KeyCheck(e)
     <input type="button" value="        FINAL FRONTIER        " onclick="type_key('  ')" />
 </td>
 </tr>
-</table>  
+</table>
 </form>
 </body>
 </html>
@@ -763,4 +763,3 @@ if __name__ == "__main__":
         print(str(e))
         tb_dump = traceback.format_exc()
         print(str(tb_dump))
-

@@ -26,9 +26,9 @@ spawn class
    .. automethod:: eof
    .. automethod:: interact
 
-   .. attribute:: logfile
-                  logfile_read
-                  logfile_send
+   .. attribute:: logger
+                  logger_read
+                  logger_send
 
       Set these to a Python file object (or :data:`sys.stdout`) to log all
       communication, data read from the child process, or data sent to the child
